@@ -11,15 +11,15 @@
   <p>
     A simple, lightweight set of tools for your home. Built with Vanilla JavaScript and Vite for maximum speed and simplicity.
     <br />
-    <strong>Live Site:</strong> <a href="https://nestly.vercel.app">Nestly</a>
+    <strong>Live Site:</strong> <a href="https://nestly-mocha.vercel.app">Nestly</a>
   </p>
 </div>
 
 ## 📦 Features
 
 * **Grocery List:** Add items and check them off.
-* **Chore-O-Matic:** Track household tasks.
-* **Secret Recipes:** Store recipes with a dedicated "Cook Mode" for easy viewing in the kitchen.
+* **Chore List:** Track household tasks.
+* **Recipe:** Store recipes with a dedicated "Cook Mode" for easy viewing in the kitchen.
 * **Packing List:** Never forget an item for your trips again.
 * **Lockbox:** Securely store codes and combos (locally).
 * **Travel Plan:** Simple itinerary management.

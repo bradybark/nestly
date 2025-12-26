@@ -1,90 +1,68 @@
 // src/tools/packing.js
-export function initPacking(app) {
-  // Load data from localStorage or start empty
-  let items = JSON.parse(localStorage.getItem('nestly_packing')) || [];
+import { loadState, saveState, escapeHTML, copyLink, showQR } from '../utils.js';
 
-  function render() {
-    app.innerHTML = `
-      <a href="#" class="back-btn">← Back to Dashboard</a>
-      <div class="tool-container">
-        <div class="tool-header">
-            <h2>📦 Packing List</h2>
-        </div>
+let state;
+
+export function initPacking(container, rawData) {
+    state = loadState(rawData, { t: "Packing List", i: [] });
+    
+    container.innerHTML = `
+        <a href="#" class="back-btn">← Back</a>
+        
+        <input type="text" id="t-in" value="${escapeHTML(state.t)}" 
+            style="font-size:2.2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:15px;">
         
         <form id="add-form" class="input-group">
             <input type="text" id="item-input" placeholder="Item name..." required>
             <input type="number" id="qty-input" value="1" min="1" style="width: 60px;">
-            <button type="submit">Add</button>
+            <button type="submit" class="btn-add">Add</button>
         </form>
 
-        <ul class="list-container" id="packing-list">
-            ${items.map(item => `
-                <li class="${item.packed ? 'completed' : ''}">
-                    <div class="item-info" data-id="${item.id}">
-                        <input type="checkbox" ${item.packed ? 'checked' : ''}>
-                        <span>${item.name} <small>(x${item.qty})</small></span>
-                    </div>
-                    <button class="delete-btn" data-id="${item.id}">🗑️</button>
-                </li>
-            `).join('')}
-        </ul>
-      </div>
+        <ul id="list-items"></ul>
+
+        <div class="share-container">
+            <button id="share-b" class="btn-share"><span>🔗</span> Copy Link</button>
+            <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
+        </div>
     `;
 
-    // Attach Event Listeners
-    document.getElementById('add-form').addEventListener('submit', addItem);
-    
-    document.querySelectorAll('.item-info input').forEach(checkbox => {
-        checkbox.addEventListener('change', (e) => {
-            const id = parseInt(e.target.closest('.item-info').dataset.id);
-            togglePacked(id);
+    const renderList = () => {
+        const list = container.querySelector('#list-items');
+        list.innerHTML = state.i.map((item, idx) => `
+            <li class="packing-item">
+                <div class="item-left" style="opacity:${item.done ? 0.4 : 1}; text-decoration:${item.done ? 'line-through' : 'none'}">
+                    <input type="checkbox" data-idx="${idx}" ${item.done ? 'checked' : ''}>
+                    <span>${escapeHTML(item.name)} <small>(x${item.qty})</small></span>
+                </div>
+                <button class="delete-btn" data-idx="${idx}">&times;</button>
+            </li>
+        `).join('');
+        
+        // Bind events
+        list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.onchange = () => { state.i[cb.dataset.idx].done = cb.checked; save(); renderList(); };
         });
-    });
-
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const id = parseInt(e.target.dataset.id);
-            deleteItem(id);
+        list.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.onclick = () => { state.i.splice(btn.dataset.idx, 1); save(); renderList(); };
         });
-    });
-  }
+    };
 
-  function addItem(e) {
-    e.preventDefault();
-    const input = document.getElementById('item-input');
-    const qty = document.getElementById('qty-input');
+    const save = () => saveState('packing', state);
+
+    container.querySelector('#t-in').oninput = (e) => { state.t = e.target.value; save(); };
+
+    container.querySelector('#add-form').onsubmit = (e) => {
+        e.preventDefault();
+        const name = container.querySelector('#item-input').value;
+        const qty = container.querySelector('#qty-input').value;
+        state.i.push({ name, qty, done: false });
+        container.querySelector('#item-input').value = '';
+        save();
+        renderList();
+    };
+
+    container.querySelector('#share-b').onclick = (e) => copyLink(e.currentTarget);
+    container.querySelector('#qr-b').onclick = () => showQR();
     
-    if (!input.value.trim()) return;
-
-    items.push({
-        id: Date.now(),
-        name: input.value.trim(),
-        qty: qty.value,
-        packed: false
-    });
-
-    save();
-    render();
-  }
-
-  function togglePacked(id) {
-    items = items.map(item => 
-        item.id === id ? { ...item, packed: !item.packed } : item
-    );
-    save();
-    render();
-  }
-
-  function deleteItem(id) {
-    items = items.filter(item => item.id !== id);
-    save();
-    render();
-  }
-
-  function save() {
-    localStorage.setItem('nestly_packing', JSON.stringify(items));
-  }
-
-  // Initial Render
-  render();
+    renderList();
 }

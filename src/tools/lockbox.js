@@ -1,9 +1,10 @@
 // src/tools/lockbox.js
+import { showQR, copyLink } from '../utils.js';
 
 let state = {
     step: 'compose', // 'compose', 'locked', 'revealed'
-    data: null,      // The encrypted string from URL
-    secret: ""       // The decrypted message
+    data: null,
+    secret: ""
 };
 
 export function initLockbox(container, rawData) {
@@ -22,16 +23,15 @@ function render(container) {
     if (state.step === 'revealed') renderRevealed(container);
 }
 
-// --- 1. COMPOSE MODE ---
 function renderCompose(container) {
     container.innerHTML = `
         <a href="#" class="back-btn">← Back</a>
         <h2 style="text-align:center; margin-bottom:10px;">Lockbox</h2>
         <p style="text-align:center; color:#86868b; margin-bottom:30px;">Encrypt a message with a password.</p>
 
-        <textarea id="msg-in" placeholder="Write your secret here..." style="width:100%; height:150px; padding:15px; border-radius:12px; border:1px solid var(--border); background:var(--card-bg); color:var(--text); font-size:1.1rem; margin-bottom:20px;"></textarea>
+        <textarea id="msg-in" placeholder="Write your secret here..." style="width:100%; height:150px; padding:15px; border-radius:12px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-size:1.1rem; margin-bottom:20px;"></textarea>
         
-        <input type="text" id="pass-in" placeholder="Set a Password" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); background:var(--card-bg); color:var(--text); font-size:1.1rem; margin-bottom:20px;">
+        <input type="text" id="pass-in" placeholder="Set a Password" style="width:100%; margin-bottom:20px;">
         
         <button id="lock-btn" class="btn-add" style="width:100%; font-size:1.1rem;">🔒 Encrypt & Create Link</button>
     `;
@@ -47,11 +47,9 @@ function renderCompose(container) {
         
         try {
             const encryptedData = await encryptMessage(msg, pass);
-            // Update URL using 'lockbox' prefix
             const encoded = btoa(encryptedData); 
             history.replaceState(null, null, '#lockbox:' + encoded);
             
-            // Show Success UI
             renderLinkReady(container);
         } catch (e) {
             console.error(e);
@@ -68,18 +66,19 @@ function renderLinkReady(container) {
             <h2>Message Locked!</h2>
             <p style="color:#86868b; margin-bottom:30px;">This link now contains your encrypted secret.</p>
             
-            <button id="copy-btn" class="btn-share"><span>🔗</span> Copy Secure Link</button>
+            <div class="share-container">
+                <button id="copy-btn" class="btn-share"><span>🔗</span> Copy Link</button>
+                <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
+            </div>
+            
             <button onclick="location.reload()" style="margin-top:20px; background:none; border:none; color:var(--accent); cursor:pointer;">Create New</button>
         </div>
     `;
 
-    container.querySelector('#copy-btn').onclick = () => {
-        navigator.clipboard.writeText(window.location.href);
-        alert("Link copied! Send it to someone with the password.");
-    };
+    container.querySelector('#copy-btn').onclick = (e) => copyLink(e.currentTarget);
+    container.querySelector('#qr-b').onclick = () => showQR();
 }
 
-// --- 2. LOCKED MODE (Recipient View) ---
 function renderLocked(container) {
     container.innerHTML = `
         <a href="#" class="back-btn">← Home</a>
@@ -88,7 +87,7 @@ function renderLocked(container) {
             <h2>Restricted Access</h2>
             <p style="color:#86868b; margin-bottom:30px;">Enter the password to read this note.</p>
             
-            <input type="password" id="unlock-pass" placeholder="Password" style="width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); background:var(--card-bg); color:var(--text); font-size:1.1rem; margin-bottom:20px; text-align:center;">
+            <input type="password" id="unlock-pass" placeholder="Password" style="width:100%; margin-bottom:20px; text-align:center;">
             
             <button id="unlock-btn" class="btn-add" style="width:100%; background:var(--text); color:var(--bg);">🔓 Unlock</button>
             <p id="error-msg" style="color:var(--danger); margin-top:15px; display:none;">Incorrect Password</p>
@@ -108,12 +107,10 @@ function renderLocked(container) {
         } catch (e) {
             console.error(e);
             err.style.display = 'block';
-            container.querySelector('#unlock-pass').classList.add('shake');
         }
     };
 }
 
-// --- 3. REVEALED MODE ---
 function renderRevealed(container) {
     container.innerHTML = `
         <div style="text-align:center;">
@@ -127,7 +124,7 @@ function renderRevealed(container) {
     `;
 }
 
-// --- CRYPTO HELPERS (AES-GCM) ---
+// AES-GCM Crypto Helpers
 async function encryptMessage(message, password) {
     const enc = new TextEncoder();
     const salt = crypto.getRandomValues(new Uint8Array(16));
