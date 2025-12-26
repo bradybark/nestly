@@ -9,7 +9,7 @@
   </p>
 
   <p>
-    A simple, lightweight set of tools for your home. Built with Vanilla JavaScript and Vite for maximum speed and simplicity.
+    A simple, lightweight set of tools for your family. Built with Vanilla JavaScript and Vite for maximum speed and simplicity.
     <br />
     <strong>Live Site:</strong> <a href="https://nestly-mocha.vercel.app">Nestly</a>
   </p>
