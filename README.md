@@ -11,7 +11,7 @@
   <p>
     A simple, lightweight set of tools for your home. Built with Vanilla JavaScript and Vite for maximum speed and simplicity.
     <br />
-    <strong>Live Site:</strong> <a href="https://nestly.vercel.app">Nestly</a>
+    <strong>Live Site:</strong> <a href="https://nestly-mocha.vercel.app">Nestly</a>
   </p>
 </div>
 
