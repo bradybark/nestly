@@ -87,12 +87,63 @@ export function updateHistory(toolId, title, hash, oldHashToReplace = null) {
     localStorage.setItem('nestly_history', JSON.stringify(history));
 }
 
-// --- Shared Functionality ---
+// --- Shared Functionality & UI ---
+
+export function showToast(message, type = 'normal') {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    container.appendChild(toast);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.animation = 'toast-out 0.3s forwards';
+        toast.addEventListener('animationend', () => toast.remove());
+    }, 3000);
+}
+
+export function showConfirm(title, message) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        overlay.innerHTML = `
+            <div class="modal-box">
+                <div class="modal-title">${escapeHTML(title)}</div>
+                <div class="modal-desc">${escapeHTML(message)}</div>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-cancel">Cancel</button>
+                    <button class="modal-btn modal-confirm">Confirm</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        const close = (result) => {
+            overlay.remove();
+            resolve(result);
+        };
+
+        overlay.querySelector('.modal-cancel').onclick = () => close(false);
+        overlay.querySelector('.modal-confirm').onclick = () => close(true);
+        // Close if clicking outside the box
+        overlay.onclick = (e) => { if (e.target === overlay) close(false); };
+    });
+}
 
 export function copyLink(btnElement) {
     navigator.clipboard.writeText(window.location.href).then(() => {
         const originalText = btnElement.innerHTML;
         btnElement.innerHTML = "✅ Copied!";
+        showToast("Link copied to clipboard!");
         setTimeout(() => btnElement.innerHTML = originalText, 2000);
     });
 }
@@ -100,9 +151,12 @@ export function copyLink(btnElement) {
 export async function copyShortLink(btnElement) {
     const originalText = btnElement.innerHTML;
     
-    if (!confirm("⚠️ Create Short Link?\n\nThis sends your list data to a third party (TinyURL) to generate the link. Proceed?")) {
-        return;
-    }
+    const confirmed = await showConfirm(
+        "Create Short Link?", 
+        "This sends your list data to a third party (TinyURL) to generate the link. Proceed?"
+    );
+
+    if (!confirmed) return;
 
     btnElement.innerHTML = "⏳...";
     btnElement.disabled = true;
@@ -118,10 +172,11 @@ export async function copyShortLink(btnElement) {
         if(!shortUrl.startsWith('http')) throw new Error("Invalid response");
 
         await navigator.clipboard.writeText(shortUrl);
+        showToast("Short link copied!");
         btnElement.innerHTML = "✅ Copied!";
     } catch (err) {
         console.error(err);
-        alert("Error shortening link. The list might be too long.");
+        showToast("Error shortening link. The list might be too long.", "error");
         btnElement.innerHTML = "❌ Error";
     }
 

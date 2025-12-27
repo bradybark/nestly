@@ -193,3 +193,91 @@ textarea::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10
   h1, h2, h3 { color: black !important; text-align: center; }
   textarea { border: none; resize: none; height: auto; overflow: visible; background: transparent; color: black !important; }
 }
+
+/* --- TOAST NOTIFICATIONS --- */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  width: 90%;
+  max-width: 400px;
+}
+
+.toast {
+  background: var(--text);
+  color: var(--bg);
+  padding: 12px 20px;
+  border-radius: 50px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: toast-in 0.3s forwards;
+  pointer-events: auto;
+}
+
+.toast.error {
+  background: var(--danger);
+  color: white;
+}
+
+@keyframes toast-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(10px); }
+}
+
+/* --- CUSTOM CONFIRM MODAL --- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: fade-in 0.2s forwards;
+}
+
+.modal-box {
+  background: var(--card-bg);
+  padding: 25px;
+  border-radius: 20px;
+  width: 85%;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  transform: scale(0.95);
+  animation: scale-in 0.2s forwards;
+}
+
+.modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; }
+.modal-desc { color: #86868b; margin-bottom: 25px; font-size: 0.95rem; line-height: 1.5; }
+
+.modal-actions { display: flex; gap: 10px; }
+.modal-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.modal-cancel { background: var(--border); color: var(--text); }
+.modal-confirm { background: var(--accent); color: white; }
+
+@keyframes fade-in { to { opacity: 1; } }
+@keyframes scale-in { to { transform: scale(1); } }

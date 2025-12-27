@@ -1,4 +1,4 @@
-import { initShareButtons, updateHistory } from '../utils.js';
+import { initShareButtons, updateHistory, showToast } from '../utils.js';
 
 let state = {
     step: 'compose',
@@ -10,7 +10,6 @@ export function initLockbox(container, rawData) {
     if (rawData) {
         state.data = rawData;
         state.step = 'locked';
-        // REMOVED updateHistory here (User request)
     } else {
         state.step = 'compose';
     }
@@ -40,7 +39,7 @@ function renderCompose(container) {
         const msg = container.querySelector('#msg-in').value;
         const pass = container.querySelector('#pass-in').value;
         
-        if (!msg || !pass) return alert("Please enter both a message and a password.");
+        if (!msg || !pass) return showToast("Please enter both a message and a password.", "error");
 
         const btn = container.querySelector('#lock-btn');
         btn.innerHTML = "⏳ Encrypting...";
@@ -54,10 +53,11 @@ function renderCompose(container) {
             history.replaceState(null, null, newHash);
             updateHistory('lockbox', "Secret Message", newHash);
             
+            showToast("Message encrypted successfully!");
             renderLinkReady(container);
         } catch (e) {
             console.error(e);
-            alert("Encryption failed.");
+            showToast("Encryption failed.", "error");
             btn.innerHTML = "🔒 Encrypt & Create Link";
         }
     };
