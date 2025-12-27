@@ -21,6 +21,6 @@
 * **Chore List:** Track household tasks.
 * **Recipe:** Store recipes with a dedicated "Cook Mode" for easy viewing in the kitchen.
 * **Packing List:** Never forget an item for your trips again.
-* **Lockbox:** Securely store codes and combos (locally).
+* **Lockbox:** Encrypt secrets into a secure, shareable link.
 * **Travel Plan:** Simple itinerary management.
 * **Emergency** Emergency Contact Info sharing.
