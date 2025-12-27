@@ -1,8 +1,7 @@
-// src/tools/lockbox.js
-import { showQR, copyLink } from '../utils.js';
+import { initShareButtons, updateHistory } from '../utils.js';
 
 let state = {
-    step: 'compose', // 'compose', 'locked', 'revealed'
+    step: 'compose',
     data: null,
     secret: ""
 };
@@ -11,6 +10,7 @@ export function initLockbox(container, rawData) {
     if (rawData) {
         state.data = rawData;
         state.step = 'locked';
+        // REMOVED updateHistory here (User request)
     } else {
         state.step = 'compose';
     }
@@ -48,7 +48,11 @@ function renderCompose(container) {
         try {
             const encryptedData = await encryptMessage(msg, pass);
             const encoded = btoa(encryptedData); 
-            history.replaceState(null, null, '#lockbox:' + encoded);
+            const newHash = '#lockbox:' + encoded;
+            
+            // Explicitly add to history on creation
+            history.replaceState(null, null, newHash);
+            updateHistory('lockbox', "Secret Message", newHash);
             
             renderLinkReady(container);
         } catch (e) {
@@ -65,18 +69,12 @@ function renderLinkReady(container) {
             <div style="font-size:4rem; margin-bottom:20px;">🔐</div>
             <h2>Message Locked!</h2>
             <p style="color:#86868b; margin-bottom:30px;">This link now contains your encrypted secret.</p>
-            
-            <div class="share-container">
-                <button id="copy-btn" class="btn-share"><span>🔗</span> Copy Link</button>
-                <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
-            </div>
-            
+            <div id="share-root"></div>
             <button onclick="location.reload()" style="margin-top:20px; background:none; border:none; color:var(--accent); cursor:pointer;">Create New</button>
         </div>
     `;
 
-    container.querySelector('#copy-btn').onclick = (e) => copyLink(e.currentTarget);
-    container.querySelector('#qr-b').onclick = () => showQR();
+    initShareButtons(container.querySelector('#share-root'));
 }
 
 function renderLocked(container) {
@@ -124,7 +122,6 @@ function renderRevealed(container) {
     `;
 }
 
-// AES-GCM Crypto Helpers
 async function encryptMessage(message, password) {
     const enc = new TextEncoder();
     const salt = crypto.getRandomValues(new Uint8Array(16));

@@ -1,5 +1,4 @@
-// src/tools/wishlist.js
-import { loadState, saveState, escapeHTML, copyLink, showQR } from '../utils.js';
+import { loadState, saveState, escapeHTML, initShareButtons } from '../utils.js';
 
 let state;
 let isEditing = true;
@@ -38,21 +37,14 @@ function renderEditor(container) {
 
         <div class="section-label">Current Items</div>
         <div id="item-list"></div>
-
-        <div class="share-container">
-            <button id="share-b" class="btn-share"><span>🔗</span> Copy Link</button>
-            <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
-        </div>
+        <div id="share-root"></div>
     `;
 
-    // Bindings
+    initShareButtons(container.querySelector('#share-root'));
+
     container.querySelector('#t-in').oninput = (e) => { state.t = e.target.value; saveState('wishlist', state); };
     container.querySelector('#view-btn').onclick = () => { isEditing = false; saveState('wishlist', state); render(container); };
     
-    // Share Buttons
-    container.querySelector('#share-b').onclick = (e) => copyLink(e.currentTarget);
-    container.querySelector('#qr-b').onclick = () => showQR();
-
     const renderList = () => {
         container.querySelector('#item-list').innerHTML = state.i.map((item, idx) => `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid var(--border);">
@@ -80,7 +72,7 @@ function renderEditor(container) {
             d: container.querySelector('#d-in').value
         });
         saveState('wishlist', state);
-        render(container); // Re-render to clear inputs and update list
+        render(container);
     };
 }
 

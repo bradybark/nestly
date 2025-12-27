@@ -6,7 +6,7 @@
   --card-bg: #f5f5f7;
   --border: #d2d2d7;
   --danger: #ff3b30;
-  --input-bg: #ffffff; /* Lighter input bg for contrast */
+  --input-bg: #ffffff; 
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,7 +16,7 @@
     --card-bg: #1c1c1e;
     --border: #3a3a3c;
     --danger: #ff453a;
-    --input-bg: #2c2c2e; /* Distinct from card-bg */
+    --input-bg: #2c2c2e; 
   }
 }
 
@@ -52,13 +52,12 @@ header p { color: #86868b; text-align: center; margin-bottom: 40px; }
 
 .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
 
-/* FIX: Better Input Visibility */
 input[type="text"], input[type="password"], input[type="number"], input[type="tel"], textarea {
   flex: 1; 
   padding: 14px; 
   border-radius: 12px; 
   border: 1px solid var(--border);
-  background: var(--input-bg); /* Uses new variable */
+  background: var(--input-bg); 
   color: var(--text); 
   font-size: 1rem;
   font-family: inherit;
@@ -91,28 +90,29 @@ li {
 }
 .btn-add:active { transform: scale(0.96); }
 
-/* Updated Share Container to support 2 buttons */
+/* --- SHARE CONTAINER UPDATES --- */
 .share-container {
   margin-top: 40px;
   padding-top: 20px;
   border-top: 1px solid var(--border);
-  display: flex; /* Flex to hold both buttons */
-  gap: 10px;
+  display: flex; 
+  gap: 8px; /* Adjusted gap */
 }
 
 .btn-share {
-  flex: 1; /* Grow to fill space */
+  flex: 1; 
   background-color: var(--card-bg);
   color: var(--accent);
   border: 1px solid var(--accent);
-  padding: 14px;
+  padding: 12px 8px; /* Adjusted padding */
   border-radius: 14px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
+  font-size: 0.9rem; /* Slightly smaller text */
   transition: background 0.2s;
 }
 .btn-share:hover { background-color: rgba(0, 113, 227, 0.05); }
@@ -184,38 +184,12 @@ li {
 input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--accent); }
 textarea::-webkit-scrollbar { width: 8px; }
 textarea::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-/* --- PRINT STYLES --- */
+
 @media print {
-  body {
-    background-color: white;
-    color: black;
-  }
-  #app {
-    max-width: 100%;
-    padding: 0;
-  }
-  /* Hide non-printable elements */
-  .top-bar, .back-btn, .btn-add, .delete-btn, .share-container, .toggle-btn, form, input[type="text"], input[type="number"] {
-    display: none !important;
-  }
-  /* Show content cleanly */
-  li, .ingredient-item, .direction-step {
-    border-bottom: 1px solid #ddd;
-    page-break-inside: avoid;
-    color: black !important;
-    opacity: 1 !important;
-  }
-  h1, h2, h3 {
-    color: black !important;
-    text-align: center;
-  }
-  /* Expand textareas for printing */
-  textarea {
-    border: none;
-    resize: none;
-    height: auto;
-    overflow: visible;
-    background: transparent;
-    color: black !important;
-  }
+  body { background-color: white; color: black; }
+  #app { max-width: 100%; padding: 0; }
+  .top-bar, .back-btn, .btn-add, .delete-btn, .share-container, .toggle-btn, form, input[type="text"], input[type="number"] { display: none !important; }
+  li, .ingredient-item, .direction-step { border-bottom: 1px solid #ddd; page-break-inside: avoid; color: black !important; opacity: 1 !important; }
+  h1, h2, h3 { color: black !important; text-align: center; }
+  textarea { border: none; resize: none; height: auto; overflow: visible; background: transparent; color: black !important; }
 }

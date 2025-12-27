@@ -1,5 +1,4 @@
-// src/tools/recipes.js
-import { loadState, saveState, escapeHTML, copyLink, showQR } from '../utils.js';
+import { loadState, saveState, escapeHTML, initShareButtons } from '../utils.js';
 
 let state;
 let isEditing = true;
@@ -37,12 +36,11 @@ function renderEditor(container) {
 
         <div class="section-label">Directions</div>
         <textarea id="d-in" style="height:250px; width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit;">${escapeHTML(state.d)}</textarea>
-
-        <div class="share-container">
-            <button id="share-b" class="btn-share"><span>🔗</span> Copy Link</button>
-            <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
-        </div>
+        
+        <div id="share-root"></div>
     `;
+
+    initShareButtons(container.querySelector('#share-root'));
 
     const update = () => saveState('recipes', state);
     container.querySelector('#t-in').oninput = (e) => { state.t = e.target.value; update(); };
@@ -52,10 +50,6 @@ function renderEditor(container) {
     container.querySelector('#s-in').oninput = (e) => { state.m.s = e.target.value; update(); };
 
     container.querySelector('#view-btn').onclick = () => { isEditing = false; update(); render(container); };
-    
-    // Share buttons
-    container.querySelector('#share-b').onclick = (e) => copyLink(e.currentTarget);
-    container.querySelector('#qr-b').onclick = () => showQR();
 }
 
 function renderViewer(container) {
@@ -70,7 +64,6 @@ function renderViewer(container) {
 
         <div class="cook-view">
             <h1>${escapeHTML(state.t)}</h1>
-            
             <div class="recipe-meta">
                 ${state.m.p ? `<div class="meta-pill">⏱️ ${escapeHTML(state.m.p)}</div>` : ''}
                 ${state.m.s ? `<div class="meta-pill">👥 ${escapeHTML(state.m.s)}</div>` : ''}
@@ -100,6 +93,5 @@ function renderViewer(container) {
 
     container.querySelectorAll('.ingredient-item').forEach(el => el.onclick = () => el.classList.toggle('ing-done'));
     container.querySelectorAll('.direction-step').forEach(el => el.onclick = () => el.classList.toggle('step-done'));
-    
     container.querySelector('#edit-btn').onclick = () => { isEditing = true; render(container); };
 }

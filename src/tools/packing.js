@@ -1,5 +1,4 @@
-// src/tools/packing.js
-import { loadState, saveState, escapeHTML, copyLink, showQR } from '../utils.js';
+import { loadState, saveState, escapeHTML, initShareButtons } from '../utils.js';
 
 let state;
 
@@ -19,12 +18,10 @@ export function initPacking(container, rawData) {
         </form>
 
         <ul id="list-items"></ul>
-
-        <div class="share-container">
-            <button id="share-b" class="btn-share"><span>🔗</span> Copy Link</button>
-            <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
-        </div>
+        <div id="share-root"></div>
     `;
+
+    initShareButtons(container.querySelector('#share-root'));
 
     const renderList = () => {
         const list = container.querySelector('#list-items');
@@ -38,7 +35,6 @@ export function initPacking(container, rawData) {
             </li>
         `).join('');
         
-        // Bind events
         list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
             cb.onchange = () => { state.i[cb.dataset.idx].done = cb.checked; save(); renderList(); };
         });
@@ -60,9 +56,6 @@ export function initPacking(container, rawData) {
         save();
         renderList();
     };
-
-    container.querySelector('#share-b').onclick = (e) => copyLink(e.currentTarget);
-    container.querySelector('#qr-b').onclick = () => showQR();
     
     renderList();
 }

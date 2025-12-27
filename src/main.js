@@ -30,7 +30,7 @@ function renderDashboard() {
     app.innerHTML = `
         <header>
             <h1>Nestly</h1>
-            <p>Simple tools for your home.</p>
+            <p>Simple tools for your family.</p>
         </header>
         
         <div class="grid">
@@ -43,19 +43,25 @@ function renderDashboard() {
         </div>
 
         ${history.length > 0 ? `
-            <div style="margin-top: 40px;">
-                <h3 style="margin-bottom: 15px; padding-left: 5px;">🕒 Recently Viewed</h3>
-                ${history.map(h => `
-                    <a href="${h.hash}" class="history-item">
-                        <span class="history-icon">${toolMap[h.toolId]?.icon || '📄'}</span>
-                        <div style="flex:1;">
-                            <div style="font-weight:600;">${escapeHTML(h.title)}</div>
-                            <div style="font-size:0.8rem; color:#86868b; text-transform:capitalize;">${toolMap[h.toolId]?.name || h.toolId}</div>
-                        </div>
-                        <span style="color:var(--accent); font-size:1.2rem;">→</span>
-                    </a>
-                `).join('')}
-            </div>
+            <details style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px;">
+                <summary style="cursor:pointer; font-size:1.1rem; font-weight:600; color:var(--text); outline:none; list-style:none; display:flex; align-items:center; gap:8px;">
+                    <span>📂 Saved Lists</span>
+                    <span style="font-size:0.8rem; opacity:0.5; font-weight:400;">(Click to show)</span>
+                </summary>
+                
+                <div style="margin-top: 15px;">
+                    ${history.map(h => `
+                        <a href="${h.hash}" class="history-item">
+                            <span class="history-icon">${toolMap[h.toolId]?.icon || '📄'}</span>
+                            <div style="flex:1;">
+                                <div style="font-weight:600;">${escapeHTML(h.title)}</div>
+                                <div style="font-size:0.8rem; color:#86868b; text-transform:capitalize;">${toolMap[h.toolId]?.name || h.toolId}</div>
+                            </div>
+                            <span style="color:var(--accent); font-size:1.2rem;">→</span>
+                        </a>
+                    `).join('')}
+                </div>
+            </details>
         ` : ''}
     `;
 

@@ -1,5 +1,4 @@
-// src/tools/itinerary.js
-import { loadState, saveState, escapeHTML, copyLink, showQR } from '../utils.js';
+import { loadState, saveState, escapeHTML, initShareButtons } from '../utils.js';
 
 let state;
 let isEditing = true;
@@ -41,14 +40,12 @@ function renderEditor(container) {
 
         <div class="section-label">📅 The Plan</div>
         <textarea id="p-in" placeholder="Day 1: Arrival & Dinner\nDay 2: Museum tour..." style="width:100%; height:250px; padding:15px; border-radius:12px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit; font-size:1rem; line-height:1.5; resize:vertical;">${escapeHTML(state.p)}</textarea>
-
-        <div class="share-container">
-            <button id="share-b" class="btn-share"><span>🔗</span> Copy Link</button>
-            <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
-        </div>
+        
+        <div id="share-root"></div>
     `;
 
-    // Bind inputs
+    initShareButtons(container.querySelector('#share-root'));
+
     const update = () => saveState('itinerary', state);
     container.querySelector('#t-in').oninput = (e) => { state.t = e.target.value; update(); };
     container.querySelector('#d-in').oninput = (e) => { state.d = e.target.value; update(); };
@@ -57,9 +54,6 @@ function renderEditor(container) {
     container.querySelector('#p-in').oninput = (e) => { state.p = e.target.value; update(); };
 
     container.querySelector('#view-btn').onclick = () => { isEditing = false; update(); render(container); };
-    
-    container.querySelector('#share-b').onclick = (e) => copyLink(e.currentTarget);
-    container.querySelector('#qr-b').onclick = () => showQR();
 }
 
 function renderViewer(container) {

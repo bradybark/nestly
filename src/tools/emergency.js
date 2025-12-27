@@ -1,5 +1,4 @@
-// src/tools/emergency.js
-import { loadState, saveState, escapeHTML, copyLink, showQR } from '../utils.js';
+import { loadState, saveState, escapeHTML, initShareButtons } from '../utils.js';
 
 let state;
 let isEditing = true;
@@ -7,9 +6,7 @@ let isEditing = true;
 export function initEmergency(container, rawData) {
     state = loadState(rawData, { t: "House Info", c: [], n: "" });
     
-    // Default one empty contact if new
     if (state.c.length === 0) state.c.push({n: "", p: ""});
-    
     isEditing = !rawData;
     render(container);
 }
@@ -35,18 +32,15 @@ function renderEditor(container) {
 
         <div class="section-label" style="margin-top:20px;">📝 Important Notes</div>
         <textarea id="n-in" placeholder="Alarm code is 1234. Water shutoff is in the basement..." style="width:100%; height:150px; padding:15px; border-radius:12px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); resize:vertical;">${escapeHTML(state.n)}</textarea>
-
-        <div class="share-container">
-            <button id="share-b" class="btn-share"><span>🔗</span> Copy Link</button>
-            <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
-        </div>
+        
+        <div id="share-root"></div>
     `;
 
-    // Bindings
+    initShareButtons(container.querySelector('#share-root'));
+
     container.querySelector('#t-in').oninput = (e) => { state.t = e.target.value; saveState('emergency', state); };
     container.querySelector('#n-in').oninput = (e) => { state.n = e.target.value; saveState('emergency', state); };
 
-    // Contacts Logic
     const cList = container.querySelector('#contacts-list');
     const renderContactsInputs = () => {
         cList.innerHTML = state.c.map((c, i) => `
@@ -65,8 +59,6 @@ function renderEditor(container) {
 
     container.querySelector('#add-c').onclick = () => { state.c.push({n: "", p: ""}); saveState('emergency', state); renderContactsInputs(); };
     container.querySelector('#view-btn').onclick = () => { isEditing = false; saveState('emergency', state); render(container); };
-    container.querySelector('#share-b').onclick = (e) => copyLink(e.currentTarget);
-    container.querySelector('#qr-b').onclick = () => showQR();
 }
 
 function renderViewer(container) {
@@ -92,6 +84,5 @@ function renderViewer(container) {
         <div class="section-label">Notes</div>
         <div style="font-size:1.1rem; line-height:1.6; white-space: pre-wrap; background:var(--card-bg); padding:20px; border-radius:18px;">${escapeHTML(state.n) || 'No notes listed.'}</div>
     `;
-
     container.querySelector('#edit-btn').onclick = () => { isEditing = true; render(container); };
 }

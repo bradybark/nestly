@@ -1,5 +1,4 @@
-// src/tools/grocery.js
-import { loadState, saveState, escapeHTML, copyLink, showQR } from '../utils.js';
+import { loadState, saveState, escapeHTML, initShareButtons } from '../utils.js';
 
 let state;
 
@@ -16,12 +15,10 @@ export function initGrocery(container, rawData) {
         </div>
 
         <ul id="list-items"></ul>
-
-        <div class="share-container">
-            <button id="share-b" class="btn-share"><span>🔗</span> Copy Link</button>
-            <button id="qr-b" class="btn-share"><span>🏁</span> QR Code</button>
-        </div>
+        <div id="share-root"></div>
     `;
+
+    initShareButtons(container.querySelector('#share-root'));
 
     const renderItems = () => {
         container.querySelector('#list-items').innerHTML = state.i.map((item, idx) => `
@@ -52,10 +49,6 @@ export function initGrocery(container, rawData) {
         if (e.key === 'Enter') container.querySelector('#add-b').click();
     };
 
-    // Share buttons
-    container.querySelector('#share-b').onclick = (e) => copyLink(e.currentTarget);
-    container.querySelector('#qr-b').onclick = () => showQR();
-
     container.querySelector('#list-items').onclick = (e) => {
         const li = e.target.closest('.grocery-item');
         if (!li) return;
@@ -63,9 +56,9 @@ export function initGrocery(container, rawData) {
 
         if (e.target.classList.contains('delete-btn')) {
             state.i.splice(idx, 1);
-        } else if (e.target.tagName === 'INPUT') { // Checkbox
+        } else if (e.target.tagName === 'INPUT') { 
             state.i[idx].done = !state.i[idx].done;
-        } else if (e.target.closest('.item-left')) { // Click on text
+        } else if (e.target.closest('.item-left')) { 
              const cb = li.querySelector('input[type="checkbox"]');
              cb.checked = !cb.checked;
              state.i[idx].done = cb.checked;
