@@ -76,7 +76,22 @@ li {
 }
 
 .item-left { display: flex; align-items: center; gap: 12px; cursor: pointer; flex: 1; }
-.delete-btn { color: var(--danger); background: transparent; border: none; font-size: 1.5rem; cursor: pointer; }
+
+/* --- NEW LIST ACTIONS --- */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.delete-btn { color: var(--danger); background: transparent; border: none; font-size: 1.5rem; cursor: pointer; padding: 0 10px;}
+
+.move-btn {
+  background: none; border: none; cursor: pointer;
+  color: var(--text); opacity: 0.3;
+  padding: 8px; font-size: 1rem; font-weight: bold;
+}
+.move-btn:hover { opacity: 1; background: rgba(0,0,0,0.05); border-radius: 50%; }
 
 .btn-add {
   padding: 12px 24px;
@@ -96,7 +111,7 @@ li {
   padding-top: 20px;
   border-top: 1px solid var(--border);
   display: flex; 
-  gap: 8px; /* Adjusted gap */
+  gap: 8px;
 }
 
 .btn-share {
@@ -104,7 +119,7 @@ li {
   background-color: var(--card-bg);
   color: var(--accent);
   border: 1px solid var(--accent);
-  padding: 12px 8px; /* Adjusted padding */
+  padding: 12px 8px;
   border-radius: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -112,7 +127,7 @@ li {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 0.9rem; /* Slightly smaller text */
+  font-size: 0.9rem;
   transition: background 0.2s;
 }
 .btn-share:hover { background-color: rgba(0, 113, 227, 0.05); }
