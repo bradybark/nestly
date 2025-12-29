@@ -1,6 +1,6 @@
 // src/main.js
 import './style.css';
-import { getHistory, escapeHTML } from './utils.js';
+import { getHistory, escapeHTML, timeAgo } from './utils.js';
 import { initGrocery } from './tools/grocery.js';
 import { initChores } from './tools/chores.js';
 import { initRecipes } from './tools/recipes.js';
@@ -55,7 +55,10 @@ function renderDashboard() {
                             <span class="history-icon">${toolMap[h.toolId]?.icon || '📄'}</span>
                             <div style="flex:1;">
                                 <div style="font-weight:600;">${escapeHTML(h.title)}</div>
-                                <div style="font-size:0.8rem; color:#86868b; text-transform:capitalize;">${toolMap[h.toolId]?.name || h.toolId}</div>
+                                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#86868b;">
+                                    <span style="text-transform:capitalize;">${toolMap[h.toolId]?.name || h.toolId}</span>
+                                    <span>${timeAgo(h.date)}</span>
+                                </div>
                             </div>
                             <span style="color:var(--accent); font-size:1.2rem;">→</span>
                         </a>
@@ -75,7 +78,18 @@ function renderDashboard() {
 
 function router() {
     const hash = window.location.hash.substring(1);
-    const [toolId, data] = hash.split(':');
+    
+    // We must handle cases where LZString output might contain ':', 
+    // though compressToEncodedURIComponent is usually safe. 
+    // The standard format is toolId:data.
+    const firstColon = hash.indexOf(':');
+    let toolId = hash; 
+    let data = null;
+
+    if (firstColon > -1) {
+        toolId = hash.substring(0, firstColon);
+        data = hash.substring(firstColon + 1);
+    }
 
     app.innerHTML = ''; 
 
