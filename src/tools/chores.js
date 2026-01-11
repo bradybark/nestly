@@ -7,7 +7,7 @@ export function initChores(container, rawData) {
         defaultTitle: 'Weekly Chores',
         columnInput: true, // Stack inputs vertically
         inputHTML: `
-            <div style="display:flex; gap:10px;">
+            <div class="mobile-row">
                 <input type="text" id="chore-in" placeholder="What needs doing?" style="flex:2">
                 <input type="text" id="who-in" placeholder="Who?" style="flex:1">
             </div>

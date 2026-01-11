@@ -24,7 +24,7 @@ function renderEditor(container) {
         </div>
 
         <input type="text" id="t-in" value="${escapeHTML(state.t)}" placeholder="Title (e.g. Babysitter Info)"
-               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:20px;">
+               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:20px; font-family:var(--font-display);">
 
         <div class="section-label"><i data-lucide="phone" style="width:16px; height:16px;"></i> Emergency Contacts</div>
         <div id="contacts-list"></div>
@@ -45,7 +45,7 @@ function renderEditor(container) {
     const cList = container.querySelector('#contacts-list');
     const renderContactsInputs = () => {
         cList.innerHTML = state.c.map((c, i) => `
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div class="mobile-row" style="margin-bottom:10px;">
                 <input type="text" class="c-name" data-idx="${i}" value="${escapeHTML(c.n)}" placeholder="Name" style="flex:1;">
                 <input type="tel" class="c-phone" data-idx="${i}" value="${escapeHTML(c.p)}" placeholder="Phone #" style="flex:1;">
                 <button class="del-c" data-idx="${i}" style="border:none; background:none; color:var(--danger); font-size:1.2rem; cursor:pointer;"><i data-lucide="x" style="width:16px; height:16px;"></i></button>

@@ -49,9 +49,9 @@ function renderEditor(container) {
         </div>
 
         <input type="text" id="t-in" value="${escapeHTML(state.t)}" placeholder="Recipe Title"
-               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:15px;">
+               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:15px; font-family:var(--font-display);">
 
-        <div class="recipe-meta">
+        <div class="recipe-meta mobile-row">
             <input type="text" id="p-in" value="${escapeHTML(state.m.p || '')}" placeholder="Prep Time" class="meta-pill">
             <input type="text" id="s-in" value="${escapeHTML(state.m.s || '')}" placeholder="Servings" class="meta-pill">
         </div>
@@ -61,7 +61,7 @@ function renderEditor(container) {
         <button id="add-ing" class="btn-share" style="width:100%; justify-content:center; margin-bottom:20px;">+ Add Ingredient</button>
 
         <div class="section-label">Directions</div>
-        <textarea id="d-in" style="height:250px; width:100%; padding:15px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit;">${escapeHTML(state.d)}</textarea>
+        <textarea id="d-in" style="height:250px; width:100%; padding:15px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:var(--font-body);">${escapeHTML(state.d)}</textarea>
 
         <div id="share-root"></div>
     `;
@@ -81,9 +81,9 @@ function renderEditor(container) {
     const renderIngInputs = () => {
         const list = container.querySelector('#ing-list');
         list.innerHTML = state.i.map((item, idx) => `
-            <div style="display:flex; gap:8px; margin-bottom:8px;">
-                <input type="text" class="i-a" data-idx="${idx}" value="${escapeHTML(item.a || '')}" placeholder="#" style="flex:1; min-width:40px;">
-                <input type="text" class="i-u" data-idx="${idx}" value="${escapeHTML(item.u || '')}" placeholder="Unit" style="flex:2; min-width:60px;">
+            <div class="mobile-row" style="margin-bottom:8px;">
+                <input type="text" class="i-a" data-idx="${idx}" value="${escapeHTML(item.a || '')}" placeholder="#" style="flex:1;">
+                <input type="text" class="i-u" data-idx="${idx}" value="${escapeHTML(item.u || '')}" placeholder="Unit" style="flex:2;">
                 <input type="text" class="i-n" data-idx="${idx}" value="${escapeHTML(item.n || '')}" placeholder="Item" style="flex:6;">
                 <button class="del-ing" data-idx="${idx}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem;"><i data-lucide="x" style="width:16px; height:16px;"></i></button>
             </div>

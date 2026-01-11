@@ -22,7 +22,7 @@ function renderEditor(container) {
         </div>
 
         <input type="text" id="t-in" value="${escapeHTML(state.t)}" placeholder="Trip Name (e.g. Japan 2026)"
-               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:5px;">
+               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:5px; font-family:var(--font-display);">
 
         <input type="text" id="d-in" value="${escapeHTML(state.d)}" placeholder="Dates (e.g. Oct 12 - 20)"
                class="font-mono" style="font-size:1rem; color:var(--text-muted); border:none; background:none; width:100%; outline:none; margin-bottom:20px; font-weight:500;">
@@ -30,16 +30,16 @@ function renderEditor(container) {
         <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
             <div style="flex:1; min-width:250px;">
                 <div class="section-label"><i data-lucide="plane" style="width:14px; height:14px; display:inline; vertical-align:middle; margin-right:4px;"></i> Transport</div>
-                <textarea id="f-in" placeholder="Flight #, Times, Car Rental..." style="width:100%; height:120px; padding:12px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit; resize:none;">${escapeHTML(state.f)}</textarea>
+                <textarea id="f-in" placeholder="Flight #, Times, Car Rental..." style="width:100%; height:120px; padding:12px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:var(--font-body); resize:none;">${escapeHTML(state.f)}</textarea>
             </div>
             <div style="flex:1; min-width:250px;">
                 <div class="section-label"><i data-lucide="building" style="width:14px; height:14px; display:inline; vertical-align:middle; margin-right:4px;"></i> Lodging</div>
-                <textarea id="h-in" placeholder="Hotel Name, Address, Codes..." style="width:100%; height:120px; padding:12px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit; resize:none;">${escapeHTML(state.h)}</textarea>
+                <textarea id="h-in" placeholder="Hotel Name, Address, Codes..." style="width:100%; height:120px; padding:12px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:var(--font-body); resize:none;">${escapeHTML(state.h)}</textarea>
             </div>
         </div>
 
         <div class="section-label"><i data-lucide="calendar" style="width:14px; height:14px; display:inline; vertical-align:middle; margin-right:4px;"></i> The Plan</div>
-        <textarea id="p-in" placeholder="Day 1: Arrival & Dinner\nDay 2: Museum tour..." style="width:100%; height:250px; padding:15px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit; font-size:1rem; line-height:1.5; resize:vertical;">${escapeHTML(state.p)}</textarea>
+        <textarea id="p-in" placeholder="Day 1: Arrival & Dinner\nDay 2: Museum tour..." style="width:100%; height:250px; padding:15px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:var(--font-body); font-size:1rem; line-height:1.5; resize:vertical;">${escapeHTML(state.p)}</textarea>
 
         <div id="share-root"></div>
     `;

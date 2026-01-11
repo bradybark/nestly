@@ -246,6 +246,21 @@ header p {
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .mobile-row {
+    flex-direction: column !important;
+  }
+
+  .mobile-row>input {
+    width: 100% !important;
+    flex: auto !important;
+  }
+}
+
+.mobile-row {
+  display: flex !important;
+  gap: 10px;
+  width: 100%;
 }
 
 /* ============================================

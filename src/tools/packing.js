@@ -6,10 +6,12 @@ export function initPacking(container, rawData) {
         toolId: 'packing',
         defaultTitle: 'Packing List',
         inputHTML: `
-            <input type="text" id="item-input" placeholder="Item name..." style="flex:2" autofocus>
-            <input type="number" id="qty-input" value="1" min="1" style="width: 60px;">
+            <div class="mobile-row">
+                <input type="text" id="item-input" placeholder="Item name..." style="flex:2" autofocus>
+                <input type="number" id="qty-input" value="1" min="1" style="width: 80px;">
+            </div>
         `,
-        
+
         createItem: (con) => {
             const name = con.querySelector('#item-input').value.trim();
             const qty = con.querySelector('#qty-input').value;

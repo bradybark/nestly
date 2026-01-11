@@ -22,11 +22,11 @@ function renderEditor(container) {
         </div>
 
         <input type="text" id="t-in" value="${escapeHTML(state.t)}" placeholder="List Title"
-               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:20px;">
+               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:20px; font-family:var(--font-display);">
 
         <div class="section-label">Add New Item</div>
         <div style="margin-bottom:20px;">
-            <div style="display:flex; gap:10px; margin-bottom:10px;">
+            <div class="mobile-row" style="margin-bottom:10px;">
                 <input type="text" id="n-in" placeholder="Item Name" style="flex:3;">
                 <input type="text" id="p-in" placeholder="Price" style="flex:1;">
             </div>

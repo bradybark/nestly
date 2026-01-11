@@ -7,7 +7,7 @@ export function initGenericList(container, rawData, config) {
         <a href="#" class="back-btn"><i data-lucide="arrow-left"></i> Back</a>
 
         <input type="text" id="t-in" value="${escapeHTML(state.t)}"
-            class="font-display" style="font-size:2.2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:15px;">
+            class="font-display" style="font-size:2.2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:15px; font-family:var(--font-display);">
 
         <div class="input-group" style="${config.columnInput ? 'flex-direction:column;' : ''}">
             ${config.inputHTML}
