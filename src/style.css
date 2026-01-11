@@ -247,6 +247,20 @@ header p {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* Compact spacing for mobile */
+  #app {
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
+
+  header {
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 2.5rem;
+  }
+
   .mobile-row {
     flex-direction: column !important;
   }
