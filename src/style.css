@@ -58,6 +58,10 @@
    2. GEOMETRIC DECORATORS
    ============================================ */
 
+* {
+  box-sizing: border-box;
+}
+
 /* "Speakeasy" Corner Brackets */
 .corner-brackets {
   position: relative;
@@ -98,7 +102,7 @@
   left: 0;
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), transparent);
   pointer-events: none;
 }
 
@@ -113,7 +117,7 @@
   left: 0;
   width: 1px;
   height: 100%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
   pointer-events: none;
 }
 
@@ -140,6 +144,12 @@
   background-size: 24px 24px;
 }
 
+/* Dot Pattern */
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, rgba(115, 115, 115, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
 /* ============================================
    4. TYPOGRAPHY
    ============================================ */
@@ -152,6 +162,13 @@ body {
   display: flex;
   justify-content: center;
   min-height: 100vh;
+  background-image:
+    linear-gradient(rgba(115, 115, 115, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(115, 115, 115, 0.01) 1px, transparent 1px),
+    radial-gradient(circle at 0% 0%, rgba(115, 115, 115, 0.02) 1px, transparent 1px),
+    radial-gradient(circle at 100% 100%, rgba(115, 115, 115, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px;
+  background-position: 0 0, 0 0, 20px 20px, 20px 20px;
 }
 
 .font-display {
@@ -183,22 +200,22 @@ body {
 
 #app {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   padding: 40px 20px;
   position: relative;
 }
 
 header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 80px;
 }
 
 header h1 {
   font-family: var(--font-display);
-  font-size: 3rem;
+  font-size: 4rem;
   margin-bottom: 0;
   letter-spacing: -0.05rem;
-  background: linear-gradient(to right, #ffffff, #f5f5f5, #d4d4d4);
+  background: linear-gradient(to right, #ffffff, #d4d4d4, #a3a3a3);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -221,7 +238,7 @@ header p {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
 }
 
@@ -238,8 +255,13 @@ header p {
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   overflow: hidden;
+  background-image: repeating-linear-gradient(45deg,
+      transparent,
+      transparent 20px,
+      rgba(115, 115, 115, 0.03) 20px,
+      rgba(115, 115, 115, 0.03) 21px);
 }
 
 /* Corner brackets on cards */
@@ -328,7 +350,8 @@ header p {
    ============================================ */
 
 /* Primary Button */
-.btn-primary, .btn-add {
+.btn-primary,
+.btn-add {
   padding: 12px 24px;
   border-radius: 4px;
   font-family: var(--font-mono);
@@ -343,10 +366,11 @@ header p {
   border: 1px solid var(--border);
   background: var(--glass-low);
   color: var(--text);
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
-.btn-primary:hover, .btn-add:hover {
+.btn-primary:hover,
+.btn-add:hover {
   color: #ffffff;
   border-color: var(--border-hover);
 }
@@ -375,7 +399,7 @@ header p {
   left: 0;
   width: 0;
   height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.8), rgba(163,163,163,0.4));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(163, 163, 163, 0.4));
   transition: width 0.3s ease-out;
 }
 
@@ -432,12 +456,14 @@ textarea {
   transition: border-color 0.2s ease;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
   border-color: var(--border-hover);
   outline: none;
 }
 
-input::placeholder, textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--text-muted);
 }
 
@@ -483,8 +509,18 @@ li::before {
   z-index: 1;
 }
 
-li:hover {
-  border-color: var(--border-hover);
+li.drag-over {
+  border: 2px dashed var(--border-hover) !important;
+  background: var(--glass-low);
+  transform: scale(1.02);
+}
+
+li[draggable="true"] {
+  cursor: grab;
+}
+
+li[draggable="true"]:active {
+  cursor: grabbing;
 }
 
 .item-left {
@@ -589,7 +625,7 @@ li:hover {
   justify-content: center;
   gap: 6px;
   transition: all 0.2s ease;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn-share:hover {
@@ -609,8 +645,13 @@ li:hover {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ============================================
@@ -621,8 +662,11 @@ li:hover {
 .qr-modal {
   display: none;
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.7);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -637,7 +681,7 @@ li:hover {
   text-align: center;
   position: relative;
   max-width: 300px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
 /* Corner brackets on modal */
@@ -704,8 +748,11 @@ li:hover {
 /* Confirm Modal */
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
   z-index: 3000;
   display: flex;
@@ -723,7 +770,7 @@ li:hover {
   width: 85%;
   max-width: 320px;
   text-align: center;
-  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
   transform: scale(0.95);
   animation: scale-in 0.2s forwards;
   position: relative;
@@ -1047,7 +1094,7 @@ textarea::-webkit-scrollbar-track {
   color: var(--text);
   padding: 12px 20px;
   border-radius: 4px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   font-family: var(--font-mono);
   font-size: 0.9rem;
   font-weight: 500;
@@ -1102,19 +1149,29 @@ textarea::-webkit-scrollbar-track {
    ============================================ */
 
 @keyframes toast-in {
-  to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes toast-out {
-  to { opacity: 0; transform: translateY(10px); }
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 }
 
 @keyframes fade-in {
-  to { opacity: 1; }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scale-in {
-  to { transform: scale(1); }
+  to {
+    transform: scale(1);
+  }
 }
 
 /* Navigation Link Underline Animation */
@@ -1130,7 +1187,7 @@ textarea::-webkit-scrollbar-track {
   left: 0;
   width: 0;
   height: 1px;
-  background: linear-gradient(90deg, rgba(255,255,255,0.8), rgba(163,163,163,0.4));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(163, 163, 163, 0.4));
   transition: width 0.3s ease-out;
 }
 
@@ -1141,8 +1198,15 @@ textarea::-webkit-scrollbar-track {
 
 /* Floating Animation */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
 }
 
 .animate-float {
@@ -1164,24 +1228,39 @@ textarea::-webkit-scrollbar-track {
     padding: 0;
   }
 
-  .top-bar, .back-btn, .btn-add, .delete-btn, .share-container,
-  .toggle-btn, form, input[type="text"], input[type="number"] {
+  .top-bar,
+  .back-btn,
+  .btn-add,
+  .delete-btn,
+  .share-container,
+  .toggle-btn,
+  form,
+  input[type="text"],
+  input[type="number"] {
     display: none !important;
   }
 
-  li, .ingredient-item, .direction-step {
+  li,
+  .ingredient-item,
+  .direction-step {
     border-bottom: 1px solid #ddd;
     page-break-inside: avoid;
     color: black !important;
     opacity: 1 !important;
   }
 
-  li::before, .card::before, .history-item::before,
-  .modal-box::before, .qr-content::before, .toast::before {
+  li::before,
+  .card::before,
+  .history-item::before,
+  .modal-box::before,
+  .qr-content::before,
+  .toast::before {
     display: none;
   }
 
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     color: black !important;
     text-align: center;
     background: none !important;

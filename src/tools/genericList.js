@@ -36,20 +36,78 @@ export function initGenericList(container, rawData, config) {
         }
 
         list.innerHTML = state.i.map((item, idx) => `
-            <li class="list-item" data-idx="${idx}">
-                <div class="item-left" style="opacity:${item.done ? 0.4 : 1}; text-decoration:${item.done ? 'line-through' : 'none'}">
-                    <input type="checkbox" ${item.done ? 'checked' : ''}>
+            <li class="list-item" draggable="true" data-idx="${idx}">
+                <div class="item-left" style="opacity:${item.done ? 0.4 : 1}; text-decoration:${item.done ? 'line-through' : 'none'}; cursor: pointer;">
                     ${config.renderItem(item)}
                 </div>
                 <div class="actions">
-                    <button class="move-btn" data-dir="up" data-idx="${idx}" title="Move Up"><i data-lucide="arrow-up" style="width:14px; height:14px;"></i></button>
-                    <button class="move-btn" data-dir="down" data-idx="${idx}" title="Move Down"><i data-lucide="arrow-down" style="width:14px; height:14px;"></i></button>
+                    <span class="drag-handle" style="cursor:grab; padding: 0 5px; color:var(--text-muted); display:flex; align-items:center;">
+                        <i data-lucide="grip-vertical" style="width:16px; height:16px;"></i>
+                    </span>
                     <button class="delete-btn" data-idx="${idx}"><i data-lucide="x" style="width:14px; height:14px;"></i></button>
                 </div>
             </li>
         `).join('');
+
         refreshIcons();
+
+        // Attach Drag Events
+        const items = list.querySelectorAll('li');
+        items.forEach(item => {
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragenter', handleDragEnter);
+            item.addEventListener('dragover', handleDragOver);
+            item.addEventListener('dragleave', handleDragLeave);
+            item.addEventListener('drop', handleDrop);
+            item.addEventListener('dragend', handleDragEnd);
+        });
     };
+
+    // --- Drag and Drop Handlers ---
+    let dragSrcEl = null;
+
+    function handleDragStart(e) {
+        this.style.opacity = '0.4';
+        dragSrcEl = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        this.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+        this.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) e.stopPropagation();
+
+        if (dragSrcEl !== this) {
+            const srcIdx = parseInt(dragSrcEl.dataset.idx);
+            const targetIdx = parseInt(this.dataset.idx);
+
+            // Move item in array
+            const item = state.i.splice(srcIdx, 1)[0];
+            state.i.splice(targetIdx, 0, item);
+
+            update();
+            renderItems();
+        }
+        return false;
+    }
+
+    function handleDragEnd(e) {
+        this.style.opacity = '1';
+        items.forEach(item => item.classList.remove('drag-over'));
+    }
 
     // --- Event Handlers ---
 
@@ -64,7 +122,7 @@ export function initGenericList(container, rawData, config) {
         update();
         renderItems();
         // Focus back on first input
-        container.querySelector('input').focus(); 
+        container.querySelector('input').focus();
     };
 
     container.querySelector('#add-b').onclick = addItem;
@@ -75,52 +133,30 @@ export function initGenericList(container, rawData, config) {
 
     // Clear Completed
     container.querySelector('#clear-done').onclick = () => {
-        if(!confirm("Remove all completed items?")) return;
+        if (!confirm("Remove all completed items?")) return;
         state.i = state.i.filter(item => !item.done);
         update();
         renderItems();
     };
 
-    // List Clicks (Delete, Toggle, Reorder)
+    // List Clicks (Delete & Toggle)
     container.querySelector('#list-items').onclick = (e) => {
         const btn = e.target.closest('button');
         const li = e.target.closest('li');
-        
-        // Handle Button Clicks
-        if (btn && li) {
-            const idx = parseInt(li.dataset.idx);
 
-            // Delete
-            if (btn.classList.contains('delete-btn')) {
-                state.i.splice(idx, 1);
-            }
-            // Reorder
-            else if (btn.classList.contains('move-btn')) {
-                const dir = btn.dataset.dir;
-                const to = dir === 'up' ? idx - 1 : idx + 1;
-                if (to >= 0 && to < state.i.length) {
-                    // Swap
-                    [state.i[idx], state.i[to]] = [state.i[to], state.i[idx]];
-                } else {
-                    return; // invalid move
-                }
-            }
+        // Handle Delete Button
+        if (btn && li && btn.classList.contains('delete-btn')) {
+            const idx = parseInt(li.dataset.idx);
+            state.i.splice(idx, 1);
             update();
             renderItems();
             return;
         }
 
-        // Handle Checkbox/Item Clicks (Toggle)
-        if (li && !btn) {
+        // Handle Item Click (Toggle) - Ignore if clicking button or drag handle
+        if (li && !btn && !e.target.closest('.drag-handle')) {
             const idx = parseInt(li.dataset.idx);
-            const cb = li.querySelector('input[type="checkbox"]');
-            
-            // If we clicked something other than the checkbox itself (e.g. text), toggle the checkbox
-            if (e.target !== cb) {
-                cb.checked = !cb.checked;
-            }
-            
-            state.i[idx].done = cb.checked;
+            state.i[idx].done = !state.i[idx].done;
             update();
             renderItems();
         }

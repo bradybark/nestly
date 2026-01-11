@@ -25,7 +25,7 @@ const tools = [
 
 function renderDashboard() {
     const history = getHistory();
-    const toolMap = tools.reduce((acc, t) => ({...acc, [t.id]: t}), {});
+    const toolMap = tools.reduce((acc, t) => ({ ...acc, [t.id]: t }), {});
 
     app.innerHTML = `
         <header>
@@ -42,30 +42,28 @@ function renderDashboard() {
             `).join('')}
         </div>
 
-        ${history.length > 0 ? `
-            <details>
-                <summary>
-                    <span>Saved Lists</span>
-                    <span class="hint">(Click to show)</span>
-                </summary>
+        <details>
+            <summary>
+                <span>Saved Lists</span>
+                <span class="hint">(Click to show)</span>
+            </summary>
 
-                <div style="margin-top: 15px;">
-                    ${history.map(h => `
-                        <a href="${h.hash}" class="history-item">
-                            <span class="history-icon"><i data-lucide="${toolMap[h.toolId]?.icon || 'file'}"></i></span>
-                            <div style="flex:1; position:relative; z-index:2;">
-                                <div style="font-weight:600;">${escapeHTML(h.title)}</div>
-                                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted);">
-                                    <span class="tech-tag-dashed" style="padding:2px 6px;">${toolMap[h.toolId]?.name || h.toolId}</span>
-                                    <span>${timeAgo(h.date)}</span>
-                                </div>
+            <div style="margin-top: 15px;">
+                ${history.length > 0 ? history.map(h => `
+                    <a href="${h.hash}" class="history-item">
+                        <span class="history-icon"><i data-lucide="${toolMap[h.toolId]?.icon || 'file'}"></i></span>
+                        <div style="flex:1; position:relative; z-index:2;">
+                            <div style="font-weight:600;">${escapeHTML(h.title)}</div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted);">
+                                <span class="tech-tag-dashed" style="padding:2px 6px;">${toolMap[h.toolId]?.name || h.toolId}</span>
+                                <span>${timeAgo(h.date)}</span>
                             </div>
-                            <span style="color:var(--text-muted); position:relative; z-index:2;"><i data-lucide="arrow-right" style="width:18px; height:18px;"></i></span>
-                        </a>
-                    `).join('')}
-                </div>
-            </details>
-        ` : ''}
+                        </div>
+                        <span style="color:var(--text-muted); position:relative; z-index:2;"><i data-lucide="arrow-right" style="width:18px; height:18px;"></i></span>
+                    </a>
+                `).join('') : '<div style="color:var(--text-muted); padding:10px; text-align:center; font-style:italic;">No saved lists yet. start using tools to save them!</div>'}
+            </div>
+        </details>
     `;
 
     app.querySelectorAll('.card').forEach(card => {
@@ -81,12 +79,12 @@ function renderDashboard() {
 
 function router() {
     const hash = window.location.hash.substring(1);
-    
+
     // We must handle cases where LZString output might contain ':', 
     // though compressToEncodedURIComponent is usually safe. 
     // The standard format is toolId:data.
     const firstColon = hash.indexOf(':');
-    let toolId = hash; 
+    let toolId = hash;
     let data = null;
 
     if (firstColon > -1) {
@@ -94,16 +92,16 @@ function router() {
         data = hash.substring(firstColon + 1);
     }
 
-    app.innerHTML = ''; 
+    app.innerHTML = '';
 
-    if (!toolId) { renderDashboard(); } 
-    else if (toolId === 'grocery') { initGrocery(app, data); } 
-    else if (toolId === 'chores') { initChores(app, data); } 
-    else if (toolId === 'recipes') { initRecipes(app, data); } 
-    else if (toolId === 'lockbox') { initLockbox(app, data); } 
+    if (!toolId) { renderDashboard(); }
+    else if (toolId === 'grocery') { initGrocery(app, data); }
+    else if (toolId === 'chores') { initChores(app, data); }
+    else if (toolId === 'recipes') { initRecipes(app, data); }
+    else if (toolId === 'lockbox') { initLockbox(app, data); }
     else if (toolId === 'itinerary') { initItinerary(app, data); }
     else if (toolId === 'emergency') { initEmergency(app, data); }
-    else if (toolId === 'packing') { initPacking(app, data); } 
+    else if (toolId === 'packing') { initPacking(app, data); }
     else if (toolId === 'wishlist') { initWishlist(app, data); }
     else { renderDashboard(); }
 }

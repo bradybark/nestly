@@ -10,7 +10,7 @@ export function loadState(rawData, defaultState) {
     try {
         // 1. Try LZ-String decompression first (New Format)
         let decodedStr = LZString.decompressFromEncodedURIComponent(rawData);
-        
+
         // 2. If null, it might be the old Base64 format (Backward Compatibility)
         if (!decodedStr) {
             decodedStr = decodeURIComponent(escape(atob(rawData)));
@@ -27,17 +27,17 @@ export function saveState(toolId, state) {
     // Use LZ-String for significantly shorter URLs
     const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(state));
     const newHash = `#${toolId}:${encoded}`;
-    
+
     const oldHash = window.location.hash;
-    
+
     history.replaceState(null, null, newHash);
-    
+
     updateHistory(toolId, state.t || "Untitled", newHash, oldHash);
 }
 
 export function escapeHTML(str) {
     if (typeof str !== 'string') return str;
-    return str.replace(/[&<>'"]/g, 
+    return str.replace(/[&<>'"]/g,
         tag => ({
             '&': '&amp;',
             '<': '&lt;',
@@ -84,22 +84,22 @@ export function updateHistory(toolId, title, hash, oldHashToReplace = null) {
 export function timeAgo(timestamp) {
     if (!timestamp) return '';
     const seconds = Math.floor((Date.now() - timestamp) / 1000);
-    
+
     let interval = seconds / 31536000;
     if (interval > 1) return Math.floor(interval) + "y ago";
-    
+
     interval = seconds / 2592000;
     if (interval > 1) return Math.floor(interval) + "mo ago";
-    
+
     interval = seconds / 86400;
     if (interval > 1) return Math.floor(interval) + "d ago";
-    
+
     interval = seconds / 3600;
     if (interval > 1) return Math.floor(interval) + "h ago";
-    
+
     interval = seconds / 60;
     if (interval > 1) return Math.floor(interval) + "m ago";
-    
+
     return "Just now";
 }
 
@@ -121,7 +121,7 @@ export function showToast(message, type = 'normal') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     toast.textContent = message;
-    
+
     container.appendChild(toast);
 
     setTimeout(() => {
@@ -189,10 +189,10 @@ export async function copyShortLink(btnElement) {
         // This requires the api/shorten.js file to be deployed (e.g. to Vercel)
         const res = await fetch(`/api/shorten?url=${encodeURIComponent(longUrl)}`);
 
-        if(!res.ok) throw new Error("Service failed");
+        if (!res.ok) throw new Error("Service failed");
 
         const data = await res.json();
-        if(!data.shortUrl) throw new Error("Invalid response");
+        if (!data.shortUrl) throw new Error("Invalid response");
 
         await navigator.clipboard.writeText(data.shortUrl);
         showToast("Short link copied!");
@@ -227,7 +227,7 @@ export function showQR() {
             </div>
         `;
         document.body.appendChild(modal);
-        
+
         modal.querySelector('.qr-close').onclick = () => modal.style.display = 'none';
         modal.onclick = (e) => {
             if (e.target === modal) modal.style.display = 'none';
@@ -246,9 +246,9 @@ export function initShareButtons(targetElement) {
 
     targetElement.className = 'share-container';
     targetElement.innerHTML = `
-        <button class="btn-share" id="btn-copy"><i data-lucide="link"></i> Copy</button>
-        <button class="btn-share" id="btn-short"><i data-lucide="scissors"></i> Shorten</button>
-        <button class="btn-share" id="btn-qr"><i data-lucide="qr-code"></i> QR</button>
+        <button class="btn-share bg-dot-pattern" id="btn-copy"><i data-lucide="link"></i> Copy</button>
+        <button class="btn-share bg-dot-pattern" id="btn-short"><i data-lucide="scissors"></i> Shorten</button>
+        <button class="btn-share bg-dot-pattern" id="btn-qr"><i data-lucide="qr-code"></i> QR</button>
     `;
 
     targetElement.querySelector('#btn-copy').onclick = (e) => copyLink(e.currentTarget);

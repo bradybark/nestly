@@ -27,12 +27,12 @@ function renderEditor(container) {
         <input type="text" id="d-in" value="${escapeHTML(state.d)}" placeholder="Dates (e.g. Oct 12 - 20)"
                class="font-mono" style="font-size:1rem; color:var(--text-muted); border:none; background:none; width:100%; outline:none; margin-bottom:20px; font-weight:500;">
 
-        <div class="grid" style="margin-bottom:20px;">
-            <div>
+        <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:250px;">
                 <div class="section-label"><i data-lucide="plane" style="width:14px; height:14px; display:inline; vertical-align:middle; margin-right:4px;"></i> Transport</div>
                 <textarea id="f-in" placeholder="Flight #, Times, Car Rental..." style="width:100%; height:120px; padding:12px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit; resize:none;">${escapeHTML(state.f)}</textarea>
             </div>
-            <div>
+            <div style="flex:1; min-width:250px;">
                 <div class="section-label"><i data-lucide="building" style="width:14px; height:14px; display:inline; vertical-align:middle; margin-right:4px;"></i> Lodging</div>
                 <textarea id="h-in" placeholder="Hotel Name, Address, Codes..." style="width:100%; height:120px; padding:12px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit; resize:none;">${escapeHTML(state.h)}</textarea>
             </div>
@@ -69,13 +69,13 @@ function renderViewer(container) {
         <h1 class="font-display" style="margin-bottom:5px; font-size:2.5rem;">${escapeHTML(state.t)}</h1>
         <p class="font-mono" style="color:var(--text-muted); font-weight:500; font-size:1rem; margin-bottom:30px;">${escapeHTML(state.d) || 'Dates TBD'}</p>
 
-        <div class="grid" style="margin-bottom:30px;">
-            <div class="corner-brackets" style="background:var(--card-bg); padding:20px; border-radius:4px; border:1px solid var(--border);">
+        <div style="display:flex; gap:15px; margin-bottom:30px; flex-wrap:wrap;">
+            <div class="corner-brackets" style="flex:1; min-width:250px; background:var(--card-bg); padding:20px; border-radius:4px; border:1px solid var(--border);">
                 <div class="section-icon" style="margin-bottom:10px; position:relative; z-index:2;"><i data-lucide="plane"></i></div>
                 <div class="font-mono" style="font-weight:600; margin-bottom:5px; position:relative; z-index:2;">Transport</div>
                 <div style="font-size:0.95rem; line-height:1.5; color:var(--text-muted); position:relative; z-index:2;">${fmt(escapeHTML(state.f))}</div>
             </div>
-            <div class="corner-brackets" style="background:var(--card-bg); padding:20px; border-radius:4px; border:1px solid var(--border);">
+            <div class="corner-brackets" style="flex:1; min-width:250px; background:var(--card-bg); padding:20px; border-radius:4px; border:1px solid var(--border);">
                 <div class="section-icon" style="margin-bottom:10px; position:relative; z-index:2;"><i data-lucide="building"></i></div>
                 <div class="font-mono" style="font-weight:600; margin-bottom:5px; position:relative; z-index:2;">Lodging</div>
                 <div style="font-size:0.95rem; line-height:1.5; color:var(--text-muted); position:relative; z-index:2;">${fmt(escapeHTML(state.h))}</div>
