@@ -1,5 +1,5 @@
 // src/tools/recipes.js
-import { loadState, saveState, escapeHTML, initShareButtons } from '../utils.js';
+import { loadState, saveState, escapeHTML, initShareButtons, refreshIcons } from '../utils.js';
 
 let state;
 let isEditing = true;
@@ -8,13 +8,13 @@ let scaleFactor = 1;
 export function initRecipes(container, rawData) {
     // Default state now uses an array for 'i' (ingredients)
     state = loadState(rawData, { t: "New Recipe", m: { p: "", s: "" }, i: [], d: "" });
-    
+
     // Handle legacy data (if 'i' is a string from old version)
     migrateOldData();
 
     // Check if migrating from very old structure (b -> d)
     if (state.b !== undefined) { state.d = state.b; delete state.b; }
-    
+
     isEditing = !rawData;
     scaleFactor = 1;
     render(container);
@@ -44,13 +44,13 @@ function render(container) {
 function renderEditor(container) {
     container.innerHTML = `
         <div class="top-bar">
-            <a href="#" class="back-btn" style="margin:0">← Back</a>
-            <button id="view-btn" class="toggle-btn">👁️ Preview</button>
+            <a href="#" class="back-btn" style="margin:0"><i data-lucide="arrow-left"></i> Back</a>
+            <button id="view-btn" class="toggle-btn"><i data-lucide="eye"></i> Preview</button>
         </div>
 
-        <input type="text" id="t-in" value="${escapeHTML(state.t)}" placeholder="Recipe Title" 
-               style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:15px;">
-        
+        <input type="text" id="t-in" value="${escapeHTML(state.t)}" placeholder="Recipe Title"
+               class="font-display" style="font-size:2rem; font-weight:700; border:none; background:none; color:var(--text); width:100%; outline:none; margin-bottom:15px;">
+
         <div class="recipe-meta">
             <input type="text" id="p-in" value="${escapeHTML(state.m.p || '')}" placeholder="Prep Time" class="meta-pill">
             <input type="text" id="s-in" value="${escapeHTML(state.m.s || '')}" placeholder="Servings" class="meta-pill">
@@ -61,15 +61,16 @@ function renderEditor(container) {
         <button id="add-ing" class="btn-share" style="width:100%; justify-content:center; margin-bottom:20px;">+ Add Ingredient</button>
 
         <div class="section-label">Directions</div>
-        <textarea id="d-in" style="height:250px; width:100%; padding:15px; border-radius:12px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit;">${escapeHTML(state.d)}</textarea>
-        
+        <textarea id="d-in" style="height:250px; width:100%; padding:15px; border-radius:4px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:inherit;">${escapeHTML(state.d)}</textarea>
+
         <div id="share-root"></div>
     `;
 
     initShareButtons(container.querySelector('#share-root'));
+    refreshIcons();
 
     const update = () => saveState('recipes', state);
-    
+
     // Title & Meta inputs
     container.querySelector('#t-in').oninput = (e) => { state.t = e.target.value; update(); };
     container.querySelector('#d-in').oninput = (e) => { state.d = e.target.value; update(); };
@@ -84,18 +85,19 @@ function renderEditor(container) {
                 <input type="text" class="i-a" data-idx="${idx}" value="${escapeHTML(item.a || '')}" placeholder="#" style="flex:1; min-width:40px;">
                 <input type="text" class="i-u" data-idx="${idx}" value="${escapeHTML(item.u || '')}" placeholder="Unit" style="flex:2; min-width:60px;">
                 <input type="text" class="i-n" data-idx="${idx}" value="${escapeHTML(item.n || '')}" placeholder="Item" style="flex:6;">
-                <button class="del-ing" data-idx="${idx}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem;">&times;</button>
+                <button class="del-ing" data-idx="${idx}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:1.2rem;"><i data-lucide="x" style="width:16px; height:16px;"></i></button>
             </div>
         `).join('');
+        refreshIcons();
 
         // Attach listeners
         list.querySelectorAll('.i-a').forEach(el => el.oninput = (e) => { state.i[el.dataset.idx].a = e.target.value; update(); });
         list.querySelectorAll('.i-u').forEach(el => el.oninput = (e) => { state.i[el.dataset.idx].u = e.target.value; update(); });
         list.querySelectorAll('.i-n').forEach(el => el.oninput = (e) => { state.i[el.dataset.idx].n = e.target.value; update(); });
-        list.querySelectorAll('.del-ing').forEach(el => el.onclick = (e) => { 
-            state.i.splice(e.target.dataset.idx, 1); 
-            update(); 
-            renderIngInputs(); 
+        list.querySelectorAll('.del-ing').forEach(el => el.onclick = (e) => {
+            state.i.splice(e.target.dataset.idx, 1);
+            update();
+            renderIngInputs();
         });
     };
     renderIngInputs();
@@ -111,7 +113,7 @@ function renderEditor(container) {
 
 function scaleAmount(amountStr, factor) {
     if (factor === 1 || !amountStr) return escapeHTML(amountStr);
-    
+
     // Try to parse fraction (e.g. "1/2") or decimal
     try {
         let num;
@@ -125,7 +127,7 @@ function scaleAmount(amountStr, factor) {
         if (isNaN(num)) return escapeHTML(amountStr); // Fallback if not a number
 
         const scaled = num * factor;
-        
+
         // Format nicely (avoid 1.50000001)
         return parseFloat(scaled.toFixed(2));
     } catch (e) {
@@ -138,30 +140,30 @@ function renderViewer(container) {
 
     container.innerHTML = `
         <div class="top-bar">
-            <a href="#" class="back-btn" style="margin:0">← Back</a>
+            <a href="#" class="back-btn" style="margin:0"><i data-lucide="arrow-left"></i> Back</a>
             <div style="display:flex; gap:5px; align-items:center;">
                 <span style="font-size:0.8rem; color:var(--accent); font-weight:600;">Scale:</span>
-                <button class="scale-btn ${scaleFactor===1?'active':''}" data-val="1">1x</button>
-                <button class="scale-btn ${scaleFactor===2?'active':''}" data-val="2">2x</button>
-                <button class="scale-btn ${scaleFactor===3?'active':''}" data-val="3">3x</button>
+                <button class="scale-btn ${scaleFactor === 1 ? 'active' : ''}" data-val="1">1x</button>
+                <button class="scale-btn ${scaleFactor === 2 ? 'active' : ''}" data-val="2">2x</button>
+                <button class="scale-btn ${scaleFactor === 3 ? 'active' : ''}" data-val="3">3x</button>
             </div>
-            <button id="edit-btn" class="toggle-btn" style="margin-left:15px;">✏️ Edit</button>
+            <button id="edit-btn" class="toggle-btn" style="margin-left:15px;"><i data-lucide="edit-2"></i> Edit</button>
         </div>
 
         <div class="cook-view">
             <h1>${escapeHTML(state.t)}</h1>
             <div class="recipe-meta">
-                ${state.m.p ? `<div class="meta-pill">⏱️ ${escapeHTML(state.m.p)}</div>` : ''}
-                ${state.m.s ? `<div class="meta-pill">👥 ${escapeHTML(state.m.s)}</div>` : ''}
+                ${state.m.p ? `<div class="meta-pill"><i data-lucide="clock" style="width:14px; height:14px;"></i> ${escapeHTML(state.m.p)}</div>` : ''}
+                ${state.m.s ? `<div class="meta-pill"><i data-lucide="users" style="width:14px; height:14px;"></i> ${escapeHTML(state.m.s)}</div>` : ''}
             </div>
 
             ${state.i.length > 0 ? `<div class="section-label">Ingredients</div>` : ''}
             <div>
                 ${state.i.map(ing => `
                     <div class="ingredient-item">
-                        <span style="font-size:1.2rem; color:var(--accent); margin-right:10px;">○</span>
-                        <span style="font-weight:700; margin-right:4px;">${scaleAmount(ing.a, scaleFactor)}</span>
-                        <span style="font-style:italic; margin-right:6px;">${escapeHTML(ing.u)}</span>
+                        <span style="font-size:1.2rem; color:var(--text-muted); margin-right:10px; display:flex; align-items:center;"><i data-lucide="circle-small" style="width:20px; height:20px;"></i></span>
+                        <span class="font-mono" style="font-weight:700; margin-right:4px;">${scaleAmount(ing.a, scaleFactor)}</span>
+                        <span style="font-style:italic; margin-right:6px; color:var(--text-muted);">${escapeHTML(ing.u)}</span>
                         <span>${escapeHTML(ing.n)}</span>
                     </div>
                 `).join('')}
@@ -179,15 +181,11 @@ function renderViewer(container) {
         </div>
 
         <style>
-            .scale-btn {
-                background: var(--card-bg); border: 1px solid var(--border);
-                padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
-            }
-            .scale-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
             .i-a, .i-u, .i-n { padding: 10px !important; } /* Smaller padding for ingredient inputs */
         </style>
     `;
 
+    refreshIcons();
     container.querySelectorAll('.ingredient-item').forEach(el => el.onclick = () => el.classList.toggle('ing-done'));
     container.querySelectorAll('.direction-step').forEach(el => el.onclick = () => el.classList.toggle('step-done'));
     container.querySelector('#edit-btn').onclick = () => { isEditing = true; render(container); };

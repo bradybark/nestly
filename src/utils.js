@@ -105,6 +105,11 @@ export function timeAgo(timestamp) {
 
 // --- Shared Functionality & UI ---
 
+// Helper to refresh Lucide icons after dynamic content is added
+export function refreshIcons() {
+    if (window.lucide) lucide.createIcons();
+}
+
 export function showToast(message, type = 'normal') {
     let container = document.querySelector('.toast-container');
     if (!container) {
@@ -156,49 +161,54 @@ export function showConfirm(title, message) {
 export function copyLink(btnElement) {
     navigator.clipboard.writeText(window.location.href).then(() => {
         const originalText = btnElement.innerHTML;
-        btnElement.innerHTML = "✅ Copied!";
+        btnElement.innerHTML = '<i data-lucide="check"></i> Copied!';
+        refreshIcons();
         showToast("Link copied to clipboard!");
-        setTimeout(() => btnElement.innerHTML = originalText, 2000);
+        setTimeout(() => { btnElement.innerHTML = originalText; refreshIcons(); }, 2000);
     });
 }
 
 export async function copyShortLink(btnElement) {
     const originalText = btnElement.innerHTML;
-    
+
     const confirmed = await showConfirm(
-        "Create Short Link?", 
+        "Create Short Link?",
         "This will generate a TinyURL for your list."
     );
 
     if (!confirmed) return;
 
-    btnElement.innerHTML = "⏳...";
+    btnElement.innerHTML = '<i data-lucide="loader-2" class="spin"></i>';
+    refreshIcons();
     btnElement.disabled = true;
 
     try {
         const longUrl = window.location.href;
-        
+
         // Call our internal API instead of a public CORS proxy
         // This requires the api/shorten.js file to be deployed (e.g. to Vercel)
         const res = await fetch(`/api/shorten?url=${encodeURIComponent(longUrl)}`);
-        
+
         if(!res.ok) throw new Error("Service failed");
-        
+
         const data = await res.json();
         if(!data.shortUrl) throw new Error("Invalid response");
 
         await navigator.clipboard.writeText(data.shortUrl);
         showToast("Short link copied!");
-        btnElement.innerHTML = "✅ Copied!";
+        btnElement.innerHTML = '<i data-lucide="check"></i> Copied!';
+        refreshIcons();
     } catch (err) {
         console.error(err);
         showToast("Error. Backend not deployed?", "error");
-        btnElement.innerHTML = "❌ Error";
+        btnElement.innerHTML = '<i data-lucide="x"></i> Error';
+        refreshIcons();
     }
 
     setTimeout(() => {
         btnElement.innerHTML = originalText;
         btnElement.disabled = false;
+        refreshIcons();
     }, 2000);
 }
 
@@ -233,15 +243,17 @@ export function showQR() {
 
 export function initShareButtons(targetElement) {
     if (!targetElement) return;
-    
+
     targetElement.className = 'share-container';
     targetElement.innerHTML = `
-        <button class="btn-share" id="btn-copy"><span>🔗</span> Copy</button>
-        <button class="btn-share" id="btn-short"><span>✂️</span> Shorten</button>
-        <button class="btn-share" id="btn-qr"><span>🏁</span> QR</button>
+        <button class="btn-share" id="btn-copy"><i data-lucide="link"></i> Copy</button>
+        <button class="btn-share" id="btn-short"><i data-lucide="scissors"></i> Shorten</button>
+        <button class="btn-share" id="btn-qr"><i data-lucide="qr-code"></i> QR</button>
     `;
 
     targetElement.querySelector('#btn-copy').onclick = (e) => copyLink(e.currentTarget);
     targetElement.querySelector('#btn-short').onclick = (e) => copyShortLink(e.currentTarget);
     targetElement.querySelector('#btn-qr').onclick = () => showQR();
+
+    refreshIcons();
 }

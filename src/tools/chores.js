@@ -25,7 +25,7 @@ export function initChores(container, rawData) {
         renderItem: (item) => `
             <div style="display:flex; flex-direction:column;">
                 <span style="font-weight:600;">${escapeHTML(item.task)}</span>
-                <span style="font-size:0.8rem; color:var(--accent);">${item.who ? '👤 ' + escapeHTML(item.who) : 'Unassigned'}</span>
+                <span style="font-size:0.8rem; color:var(--accent); display:flex; align-items:center; gap:4px;">${item.who ? '<i data-lucide="user" style="width:12px; height:12px;"></i> ' + escapeHTML(item.who) : 'Unassigned'}</span>
             </div>
         `
     });

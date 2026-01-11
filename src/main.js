@@ -13,14 +13,14 @@ import { initWishlist } from './tools/wishlist.js';
 const app = document.getElementById('app');
 
 const tools = [
-    { id: 'grocery', name: 'Grocery List', icon: '🛒' },
-    { id: 'chores', name: 'Chore List', icon: '🧹' },
-    { id: 'recipes', name: 'Recipe', icon: '📖' },
-    { id: 'packing', name: 'Packing List', icon: '📦' },
-    { id: 'itinerary', name: 'Travel Plan', icon: '✈️' },
-    { id: 'wishlist', name: 'Wishlist', icon: '🎁' },
-    { id: 'emergency', name: 'Emergency Info', icon: '🏥' },
-    { id: 'lockbox', name: 'Lockbox', icon: '🔒' },
+    { id: 'grocery', name: 'Grocery List', icon: 'shopping-cart' },
+    { id: 'chores', name: 'Chore List', icon: 'list-checks' },
+    { id: 'recipes', name: 'Recipe', icon: 'chef-hat' },
+    { id: 'packing', name: 'Packing List', icon: 'package' },
+    { id: 'itinerary', name: 'Travel Plan', icon: 'plane' },
+    { id: 'wishlist', name: 'Wishlist', icon: 'gift' },
+    { id: 'emergency', name: 'Emergency Info', icon: 'heart-pulse' },
+    { id: 'lockbox', name: 'Lockbox', icon: 'lock' },
 ];
 
 function renderDashboard() {
@@ -30,37 +30,37 @@ function renderDashboard() {
     app.innerHTML = `
         <header>
             <h1>Nestly</h1>
-            <p>Simple tools for your family.</p>
+            <p class="font-mono">Simple tools for your family.</p>
         </header>
-        
+
         <div class="grid">
             ${tools.map(t => `
                 <div class="card" data-id="${t.id}">
-                    <span class="icon">${t.icon}</span>
+                    <span class="icon"><i data-lucide="${t.icon}"></i></span>
                     <span class="label">${t.name}</span>
                 </div>
             `).join('')}
         </div>
 
         ${history.length > 0 ? `
-            <details style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px;">
-                <summary style="cursor:pointer; font-size:1.1rem; font-weight:600; color:var(--text); outline:none; list-style:none; display:flex; align-items:center; gap:8px;">
-                    <span>📂 Saved Lists</span>
-                    <span style="font-size:0.8rem; opacity:0.5; font-weight:400;">(Click to show)</span>
+            <details>
+                <summary>
+                    <span>Saved Lists</span>
+                    <span class="hint">(Click to show)</span>
                 </summary>
-                
+
                 <div style="margin-top: 15px;">
                     ${history.map(h => `
                         <a href="${h.hash}" class="history-item">
-                            <span class="history-icon">${toolMap[h.toolId]?.icon || '📄'}</span>
-                            <div style="flex:1;">
+                            <span class="history-icon"><i data-lucide="${toolMap[h.toolId]?.icon || 'file'}"></i></span>
+                            <div style="flex:1; position:relative; z-index:2;">
                                 <div style="font-weight:600;">${escapeHTML(h.title)}</div>
-                                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#86868b;">
-                                    <span style="text-transform:capitalize;">${toolMap[h.toolId]?.name || h.toolId}</span>
+                                <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted);">
+                                    <span class="tech-tag-dashed" style="padding:2px 6px;">${toolMap[h.toolId]?.name || h.toolId}</span>
                                     <span>${timeAgo(h.date)}</span>
                                 </div>
                             </div>
-                            <span style="color:var(--accent); font-size:1.2rem;">→</span>
+                            <span style="color:var(--text-muted); position:relative; z-index:2;"><i data-lucide="arrow-right" style="width:18px; height:18px;"></i></span>
                         </a>
                     `).join('')}
                 </div>
@@ -71,9 +71,12 @@ function renderDashboard() {
     app.querySelectorAll('.card').forEach(card => {
         card.addEventListener('click', () => {
             const id = card.getAttribute('data-id');
-            window.location.hash = id; 
+            window.location.hash = id;
         });
     });
+
+    // Initialize Lucide icons
+    if (window.lucide) lucide.createIcons();
 }
 
 function router() {
