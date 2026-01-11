@@ -249,8 +249,16 @@ header p {
 
   /* Compact spacing for mobile */
   #app {
-    padding-top: 10px;
+    padding-top: 2px;
     padding-bottom: 20px;
+  }
+
+  header {
+    margin-bottom: 50px;
+  }
+
+  header h1 {
+    font-size: 3rem;
   }
 
   .mobile-row {
