@@ -9,6 +9,7 @@ import { initItinerary } from './tools/itinerary.js';
 import { initEmergency } from './tools/emergency.js';
 import { initPacking } from './tools/packing.js';
 import { initWishlist } from './tools/wishlist.js';
+import { inject } from '@vercel/analytics';
 
 const app = document.getElementById('app');
 
@@ -108,3 +109,6 @@ function router() {
 
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);
+
+// Initialize Vercel Analytics
+inject();
